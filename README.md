@@ -12,7 +12,6 @@ Projeto para desenvolvimento de jogo dungeon crawler
 •	Sistema de experiência com aumento de nível e atributos
 
 3. Aspectos de Jogabilidade  
-   
 3.1. Jogadores
 Perfil
 	Jogadores com gosto para jogos de RPG, mas vários que jogam jogos de ação podem se encaixar no perfil também.
@@ -31,22 +30,19 @@ Personagem
 •	Recompensas:
 	Ao vencer inimigos o jogador receberá experiência, que o permitirá aumentar seu nível, recebendo atributos e novas habilidades.
 •	Turnos:
-	Cada ação do jogador, seja de movimento ou ataque, passará seu turno, fazendo com que inimigos no mapa possam agir.  
- 
+	Cada ação do jogador, seja de movimento ou ataque, passará seu turno, fazendo com que inimigos no mapa possam agir.
 3.3. Dinâmicas  
 Níveis:
 	O jogador receberá pontos de experiência ao derrotar inimigos. Ao juntar determinada quantidade de pontos, o personagem aumentará de nível, recebendo atributos e novas habilidades.
 Novos desafios:
-	Progredir nas masmorras trará novos inimigos, itens e biomas a serem superados e explorados.  
- 
-3.4. Estéticas
+	Progredir nas masmorras trará novos inimigos, itens e biomas a serem superados e explorados.
+3.4. Estéticas  
 Conquista:
 	Completar masmorras e derrotar inimigos trará ao jogador a sensação de superação.
 Descobertas:
 	O jogador descobrirá novos biomas conforme completa ou se aprofunda em masmorras.
 Realização:
-	Combinar o uso inteligente do layout do mapa com as habilidades e itens disponíveis para vencer inimigos poderosos ou conservar HP trará ao jogador a sensação de melhora e de progresso no entendimento das mecânicas.  
- 
+	Combinar o uso inteligente do layout do mapa com as habilidades e itens disponíveis para vencer inimigos poderosos ou conservar HP trará ao jogador a sensação de melhora e de progresso no entendimento das mecânicas.
 3.5. Componentes  
 Menu:
 	A qualquer momento na masmorra o jogador poderá acessar um menu que conterá as informações do personagem como atributos e habilidades, os itens no inventário e seus usos e informações básicas de localização, como o piso e a masmorra no qual o personagem se encontra.
@@ -57,8 +53,7 @@ Personagens e classes:
 Masmorras:
 	A maior parte do tempo o jogador estará em masmorras, onde enfrentará inimigos e conseguirá itens. As masmorras terão andares limitados de acordo com sua dificuldade, e seus layouts serão únicos. Inimigos e itens estarão dispostos ao longo das masmorras.
 Inimigos:
-	NPCs inimigos estarão dispostos ao longo da masmorra e tentarão atacar ou impedir o jogador de prosseguir de acordo com seus padrões de comportamento. Eles terão seus próprios atributos e concederão experiência caso sejam derrotados.  
- 
+	NPCs inimigos estarão dispostos ao longo da masmorra e tentarão atacar ou impedir o jogador de prosseguir de acordo com seus padrões de comportamento. Eles terão seus próprios atributos e concederão experiência caso sejam derrotados.
 3.6. Regras do Jogo  
 Ações:
 	O jogador poderá escolher uma ação por turno, que será seguida por uma ação inimiga. As ações consistem em mover, atacar, usar habilidade e usar item.
