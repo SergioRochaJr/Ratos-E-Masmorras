@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target; // Referência ao personagem
-    public Vector3 offset; // Offset opcional para ajustar a posição da câmera
+    public Transform target; // Referï¿½ncia ao personagem
+    public Vector3 offset; // Offset opcional para ajustar a posiï¿½ï¿½o da cï¿½mera
 
     void Update()
     {
-        // Atualiza a posição da câmera para seguir o personagem com o offset
+        // Atualiza a posiï¿½ï¿½o da cï¿½mera para seguir o personagem com o offset
         transform.position = target.position + offset;
     }
 }

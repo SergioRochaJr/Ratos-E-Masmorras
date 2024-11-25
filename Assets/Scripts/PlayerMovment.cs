@@ -5,22 +5,29 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f; // Velocidade do movimento
     public float gridSize = 1f;  // Tamanho do tile (ex: 1 unidade)
+    public float hopHeight = 0.2f; // Altura do "pulo" ao andar
+    public float attackHopHeight = 0.5f; // Altura do "pulo" ao atacar
 
-    private Vector2 targetPosition; // PosiÁ„o alvo para onde o personagem vai se mover
-    private bool isMoving = false;  // Indica se o personagem est· se movendo
+    private Vector2 targetPosition; // Posi√ß√£o alvo para onde o personagem vai se mover
+    private bool isMoving = false;  // Indica se o personagem est√° se movendo
+    private Vector3 originalPosition; // Posi√ß√£o inicial para restaurar ap√≥s o "pulo"
 
-    // ReferÍncia ao Tilemap para verificar a colis„o com as paredes
+    // Refer√™ncia ao Tilemap para verificar a colis√£o com as paredes
     public Tilemap tilemap;
-    public LayerMask paredeLayer; // Camada onde as paredes est„o (ex: camada "Parede")
+    public LayerMask paredeLayer; // Camada onde as paredes est√£o (ex: camada "Parede")
+
+    private SpriteRenderer spriteRenderer; // Para controlar o espelhamento do sprite
 
     void Start()
     {
-        targetPosition = transform.position; // Define a posiÁ„o inicial como alvo
+        targetPosition = transform.position; // Define a posi√ß√£o inicial como alvo
+        originalPosition = transform.position; // Salva a posi√ß√£o inicial
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Obt√©m o SpriteRenderer
     }
 
     void Update()
     {
-        // Somente permite o input se n„o estiver se movendo
+        // Somente permite o input se n√£o estiver se movendo
         if (!isMoving)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && CanMove(Vector2.up))
@@ -28,12 +35,22 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.DownArrow) && CanMove(Vector2.down))
                 StartMovement(Vector2.down);
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && CanMove(Vector2.left))
+            {
                 StartMovement(Vector2.left);
+                FlipSprite(true); // Espelha o sprite
+            }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && CanMove(Vector2.right))
+            {
                 StartMovement(Vector2.right);
+                FlipSprite(false); // Reseta o espelhamento
+            }
+            else if (Input.GetKeyDown(KeyCode.E)) // Simula um ataque com pulo
+            {
+                PerformAttack();
+            }
         }
 
-        // Move o personagem em direÁ„o ao alvo
+        // Move o personagem em dire√ß√£o ao alvo
         if (isMoving)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
@@ -44,31 +61,70 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Inicia o movimento em uma direÁ„o especÌfica
+    // Inicia o movimento em uma dire√ß√£o espec√≠fica
     private void StartMovement(Vector2 direction)
     {
-        targetPosition = (Vector2)transform.position + direction * gridSize; // Define o prÛximo tile como alvo
+        targetPosition = (Vector2)transform.position + direction * gridSize; // Define o pr√≥ximo tile como alvo
         isMoving = true;
+        StartCoroutine(HopEffect()); // Adiciona o efeito de "pulo"
     }
 
-    // Checa se È possÌvel mover para a direÁ„o fornecida (verifica se h· uma parede)
+    // Simula um pequeno pulo ao andar
+    private System.Collections.IEnumerator HopEffect()
+    {
+        // Sobe um pouco
+        transform.position += Vector3.up * hopHeight;
+        yield return new WaitForSeconds(0.1f);
+
+        // Retorna √† posi√ß√£o original
+        transform.position -= Vector3.up * hopHeight;
+    }
+
+    // Checa se √© poss√≠vel mover para a dire√ß√£o fornecida (verifica se h√° uma parede)
     private bool CanMove(Vector2 direction)
     {
-        // Calcula a posiÁ„o de destino
+        // Calcula a posi√ß√£o de destino
         Vector2 newPos = (Vector2)transform.position + direction * gridSize;
 
-        // Verifica se o tile de destino est· bloqueado (com a camada "Parede")
-        Vector3Int tilePosition = tilemap.WorldToCell(newPos); // Converte a posiÁ„o para o grid do Tilemap
+        // Verifica se o tile de destino est√° bloqueado (com a camada "Parede")
+        Vector3Int tilePosition = tilemap.WorldToCell(newPos); // Converte a posi√ß√£o para o grid do Tilemap
         TileBase tileAtPosition = tilemap.GetTile(tilePosition);
 
-        // Verifica se h· um tile de parede no destino
+        // Verifica se h√° um tile de parede no destino
         if (tileAtPosition != null && tilemap.GetColliderType(tilePosition) != Tile.ColliderType.None)
         {
-            // Se houver um tile de parede (ou outro objeto que bloqueia o movimento), o movimento n„o È permitido
+            // Se houver um tile de parede (ou outro objeto que bloqueia o movimento), o movimento n√£o √© permitido
             return false;
         }
 
-        // Se n„o houver colis„o, o movimento È permitido
+        // Se n√£o houver colis√£o, o movimento √© permitido
         return true;
     }
+
+    // Espelha o sprite horizontalmente
+    private void FlipSprite(bool faceLeft)
+    {
+        spriteRenderer.flipX = faceLeft;
+    }
+
+    // Simula o ataque com um pulo
+    private void PerformAttack()
+    {
+        StartCoroutine(AttackHopEffect());
+    }
+
+    // Efeito de "pulo" ao atacar
+private System.Collections.IEnumerator AttackHopEffect()
+{
+    // Salva a posi√ß√£o atual antes do ataque
+    Vector3 preAttackPosition = transform.position;
+
+    // Sobe mais alto (simula o ataque)
+    transform.position += Vector3.up * attackHopHeight;
+    yield return new WaitForSeconds(0.2f);
+
+    // Retorna √† posi√ß√£o anterior ao ataque
+    transform.position = preAttackPosition;
+}
+
 }
