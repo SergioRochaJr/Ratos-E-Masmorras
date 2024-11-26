@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Somente permite o input se não estiver se movendo
+        // Verifica se o jogador não está em movimento
         if (!isMoving)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) && CanMove(Vector2.up))
@@ -37,18 +37,25 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && CanMove(Vector2.left))
             {
                 StartMovement(Vector2.left);
-                FlipSprite(true); // Espelha o sprite
+                FlipSprite(true);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && CanMove(Vector2.right))
             {
                 StartMovement(Vector2.right);
-                FlipSprite(false); // Reseta o espelhamento
+                FlipSprite(false);
             }
-            else if (Input.GetKeyDown(KeyCode.E)) // Simula um ataque com pulo
+            else if (Input.GetKeyDown(KeyCode.E))
             {
                 PerformAttack();
             }
+
+        // Checa se o movimento terminou
+        if (isMoving && (Vector2)transform.position == targetPosition)
+        {
+            isMoving = false;
+            NotifyEnemies(); // Chama os inimigos para agir
         }
+    }
 
         // Move o personagem em direção ao alvo
         if (isMoving)
@@ -126,5 +133,15 @@ private System.Collections.IEnumerator AttackHopEffect()
     // Retorna à posição anterior ao ataque
     transform.position = preAttackPosition;
 }
+
+    private void NotifyEnemies()
+    {
+        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
+        foreach (EnemyController enemy in enemies)
+        {
+            enemy.TakeTurn();
+        }
+    }
+
 
 }
