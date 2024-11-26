@@ -12,8 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving = false;  // Indica se o personagem está se movendo
     private Vector3 originalPosition; // Posição inicial para restaurar após o "pulo"
 
-    // Referência ao Tilemap para verificar a colisão com as paredes
-    public Tilemap tilemap;
+    public Tilemap tilemap; // Referência ao Tilemap para verificar colisão
     public LayerMask paredeLayer; // Camada onde as paredes estão (ex: camada "Parede")
 
     private SpriteRenderer spriteRenderer; // Para controlar o espelhamento do sprite
@@ -48,100 +47,83 @@ public class PlayerMovement : MonoBehaviour
             {
                 PerformAttack();
             }
-
-        // Checa se o movimento terminou
-        if (isMoving && (Vector2)transform.position == targetPosition)
-        {
-            isMoving = false;
-            NotifyEnemies(); // Chama os inimigos para agir
         }
-    }
 
-        // Move o personagem em direção ao alvo
+        // Move o jogador em direção ao alvo
         if (isMoving)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
-            // Checa se o personagem chegou ao destino
             if ((Vector2)transform.position == targetPosition)
+            {
                 isMoving = false;
+                NotifyEnemies(); // Notifica os inimigos após o movimento
+            }
         }
     }
 
-    // Inicia o movimento em uma direção específica
     private void StartMovement(Vector2 direction)
     {
-        targetPosition = (Vector2)transform.position + direction * gridSize; // Define o próximo tile como alvo
+        targetPosition = (Vector2)transform.position + direction * gridSize;
         isMoving = true;
-        StartCoroutine(HopEffect()); // Adiciona o efeito de "pulo"
+        StartCoroutine(HopEffect());
     }
 
-    // Simula um pequeno pulo ao andar
     private System.Collections.IEnumerator HopEffect()
     {
-        // Sobe um pouco
         transform.position += Vector3.up * hopHeight;
         yield return new WaitForSeconds(0.1f);
-
-        // Retorna à posição original
         transform.position -= Vector3.up * hopHeight;
     }
 
-    // Checa se é possível mover para a direção fornecida (verifica se há uma parede)
     private bool CanMove(Vector2 direction)
     {
-        // Calcula a posição de destino
         Vector2 newPos = (Vector2)transform.position + direction * gridSize;
-
-        // Verifica se o tile de destino está bloqueado (com a camada "Parede")
-        Vector3Int tilePosition = tilemap.WorldToCell(newPos); // Converte a posição para o grid do Tilemap
+        Vector3Int tilePosition = tilemap.WorldToCell(newPos);
         TileBase tileAtPosition = tilemap.GetTile(tilePosition);
 
-        // Verifica se há um tile de parede no destino
         if (tileAtPosition != null && tilemap.GetColliderType(tilePosition) != Tile.ColliderType.None)
         {
-            // Se houver um tile de parede (ou outro objeto que bloqueia o movimento), o movimento não é permitido
             return false;
         }
 
-        // Se não houver colisão, o movimento é permitido
         return true;
     }
 
-    // Espelha o sprite horizontalmente
     private void FlipSprite(bool faceLeft)
     {
         spriteRenderer.flipX = faceLeft;
     }
 
-    // Simula o ataque com um pulo
     private void PerformAttack()
     {
         StartCoroutine(AttackHopEffect());
     }
 
-    // Efeito de "pulo" ao atacar
-private System.Collections.IEnumerator AttackHopEffect()
-{
-    // Salva a posição atual antes do ataque
-    Vector3 preAttackPosition = transform.position;
-
-    // Sobe mais alto (simula o ataque)
-    transform.position += Vector3.up * attackHopHeight;
-    yield return new WaitForSeconds(0.2f);
-
-    // Retorna à posição anterior ao ataque
-    transform.position = preAttackPosition;
-}
+    private System.Collections.IEnumerator AttackHopEffect()
+    {
+        Vector3 preAttackPosition = transform.position;
+        transform.position += Vector3.up * attackHopHeight;
+        yield return new WaitForSeconds(0.2f);
+        transform.position = preAttackPosition;
+    }
 
     private void NotifyEnemies()
     {
-        EnemyController[] enemies = FindObjectsOfType<EnemyController>();
-        foreach (EnemyController enemy in enemies)
+        Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 10f, LayerMask.GetMask("Enemy"));
+        foreach (Collider2D collider in nearbyEnemies)
         {
-            enemy.TakeTurn();
+            EnemyController enemy = collider.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.TakeTurn();
+            }
         }
     }
 
-
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 10f);
+    }
 }

@@ -1,42 +1,61 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class EnemyController : MonoBehaviour
 {
-    public float detectionRange = 6f; // Distância de detecção do jogador
-    public float gridSize = 1f; // Tamanho do movimento em cada turno
+    public float detectionRange = 6f; // Alcance de detecção do jogador
+    public float gridSize = 1f; // Tamanho do movimento por turno
     public Transform player; // Referência ao jogador
-    private bool isMoving = false; // Verifica se o inimigo está se movendo
-    private Vector3 targetPosition; // Posição alvo do inimigo
+    public Tilemap tilemap; // Referência ao Tilemap
+    public LayerMask paredeLayer; // Camada das paredes (usada para verificação de colisão)
+
+    private bool isMoving = false; // Indica se o inimigo está se movendo
+    private Vector3 targetPosition; // Próxima posição do inimigo
 
     private void Start()
     {
-        targetPosition = transform.position; // Define a posição inicial
+        targetPosition = transform.position; // Posição inicial
     }
 
     public void TakeTurn()
     {
-        if (isMoving) return; // Não realiza outra ação se já estiver se movendo
+        if (isMoving) return;
 
-        // Verifica a distância ao jogador
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         if (distanceToPlayer <= detectionRange)
         {
-            // Determina a direção para o jogador
             Vector3 direction = (player.position - transform.position).normalized;
-
-            // Ajusta a direção para o grid
             Vector3Int gridDirection = Vector3Int.RoundToInt(new Vector3(direction.x, direction.y, 0));
-            Move(gridDirection);
+
+            if (CanMove(gridDirection))
+            {
+                Move(gridDirection);
+            }
+            else
+            {
+                TryRandomMove();
+            }
         }
     }
 
     private void Move(Vector3Int direction)
     {
-        // Calcula a nova posição
         targetPosition = transform.position + new Vector3(direction.x, direction.y, 0) * gridSize;
-
-        // Inicia o movimento
         StartCoroutine(MoveToTarget());
+    }
+
+    private bool CanMove(Vector3Int direction)
+    {
+        Vector3 newPosition = transform.position + new Vector3(direction.x, direction.y, 0) * gridSize;
+        Vector3Int tilePosition = tilemap.WorldToCell(newPosition);
+        TileBase tileAtPosition = tilemap.GetTile(tilePosition);
+
+        if (tileAtPosition != null && tilemap.GetColliderType(tilePosition) != Tile.ColliderType.None)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private System.Collections.IEnumerator MoveToTarget()
@@ -49,5 +68,21 @@ public class EnemyController : MonoBehaviour
         }
         transform.position = targetPosition;
         isMoving = false;
+    }
+
+    private void TryRandomMove()
+    {
+        Vector3Int[] directions = {
+            Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right
+        };
+
+        foreach (var direction in directions)
+        {
+            if (CanMove(direction))
+            {
+                Move(direction);
+                return;
+            }
+        }
     }
 }
