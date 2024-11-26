@@ -171,10 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4d70eaf568b7df419b1d39fb5879bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 2
   detectionRange: 6
-  gridSize: 1
+  attackRange: 1
   player: {fileID: 0}
-  tilemap: {fileID: 0}
-  paredeLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  gameController: {fileID: 0}
