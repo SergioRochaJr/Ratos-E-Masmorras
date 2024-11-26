@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask paredeLayer; // Camada onde as paredes estão (ex: camada "Parede")
 
     private SpriteRenderer spriteRenderer; // Para controlar o espelhamento do sprite
+    public GameController gameController; // Referência ao GameController (onde gerenciamos o turno)
 
     void Start()
     {
@@ -27,37 +28,35 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Somente permite o input se não estiver se movendo
-        if (!isMoving)
+        // Verifica se é o turno do jogador e se ele não está em movimento
+        if (!isMoving && gameController.isPlayerTurn)
         {
+            // Verifica o input para cada direção
             if (Input.GetKeyDown(KeyCode.UpArrow) && CanMove(Vector2.up))
                 StartMovement(Vector2.up);
             else if (Input.GetKeyDown(KeyCode.DownArrow) && CanMove(Vector2.down))
                 StartMovement(Vector2.down);
             else if (Input.GetKeyDown(KeyCode.LeftArrow) && CanMove(Vector2.left))
-            {
                 StartMovement(Vector2.left);
-                FlipSprite(true); // Espelha o sprite
-            }
             else if (Input.GetKeyDown(KeyCode.RightArrow) && CanMove(Vector2.right))
-            {
                 StartMovement(Vector2.right);
-                FlipSprite(false); // Reseta o espelhamento
-            }
-            else if (Input.GetKeyDown(KeyCode.E)) // Simula um ataque com pulo
+            else if (Input.GetKeyDown(KeyCode.E))
             {
                 PerformAttack();
             }
+        }
+
+        // Checa se o movimento terminou
+        if (isMoving && (Vector2)transform.position == targetPosition)
+        {
+            isMoving = false;
+            gameController.EndPlayerTurn(); // Termina o turno do jogador
         }
 
         // Move o personagem em direção ao alvo
         if (isMoving)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-
-            // Checa se o personagem chegou ao destino
-            if ((Vector2)transform.position == targetPosition)
-                isMoving = false;
         }
     }
 
@@ -114,17 +113,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Efeito de "pulo" ao atacar
-private System.Collections.IEnumerator AttackHopEffect()
-{
-    // Salva a posição atual antes do ataque
-    Vector3 preAttackPosition = transform.position;
+    private System.Collections.IEnumerator AttackHopEffect()
+    {
+        // Salva a posição atual antes do ataque
+        Vector3 preAttackPosition = transform.position;
 
-    // Sobe mais alto (simula o ataque)
-    transform.position += Vector3.up * attackHopHeight;
-    yield return new WaitForSeconds(0.2f);
+        // Sobe mais alto (simula o ataque)
+        transform.position += Vector3.up * attackHopHeight;
+        yield return new WaitForSeconds(0.2f);
 
-    // Retorna à posição anterior ao ataque
-    transform.position = preAttackPosition;
-}
-
+        // Retorna à posição anterior ao ataque
+        transform.position = preAttackPosition;
+    }
 }
