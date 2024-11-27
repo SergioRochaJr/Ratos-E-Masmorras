@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer spriteRenderer; // Para controlar o espelhamento do sprite
     public GameController gameController; // Referência ao GameController (onde gerenciamos o turno)
 
+    public MenuController menuController; // Referência ao MenuController
+
+
     void Start()
     {
         targetPosition = transform.position; // Define a posição inicial como alvo
@@ -29,22 +32,47 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Verifica se é o turno do jogador e se ele não está em movimento
-        if (!isMoving && gameController.isPlayerTurn)
+         // Verifica se o menu do inventário está aberto
+    if (menuController != null && menuController.IsInventoryOpen)
+        return;
+
+    // Verifica se é o turno do jogador e se ele não está em movimento
+    if (!isMoving && gameController.isPlayerTurn)
+    {
+        // Verifica se o menu do inventário está aberto
+    if (menuController != null && menuController.IsInventoryOpen)
+        return;
+
+    // Verifica se é o turno do jogador e se ele não está em movimento
+    if (!isMoving && gameController.isPlayerTurn)
+    {
+        // Verifica o input para cada direção
+        if (Input.GetKeyDown(KeyCode.UpArrow) && CanMove(Vector2.up))
+            StartMovement(Vector2.up);
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && CanMove(Vector2.down))
+            StartMovement(Vector2.down);
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && CanMove(Vector2.left))
+            StartMovement(Vector2.left);
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && CanMove(Vector2.right))
+            StartMovement(Vector2.right);
+        else if (Input.GetKeyDown(KeyCode.E))
         {
-            // Verifica o input para cada direção
-            if (Input.GetKeyDown(KeyCode.UpArrow) && CanMove(Vector2.up))
-                StartMovement(Vector2.up);
-            else if (Input.GetKeyDown(KeyCode.DownArrow) && CanMove(Vector2.down))
-                StartMovement(Vector2.down);
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && CanMove(Vector2.left))
-                StartMovement(Vector2.left);
-            else if (Input.GetKeyDown(KeyCode.RightArrow) && CanMove(Vector2.right))
-                StartMovement(Vector2.right);
-            else if (Input.GetKeyDown(KeyCode.E))
-            {
-                PerformAttack();
-            }
+            PerformAttack();
+        }
+    }
+
+    // Checa se o movimento terminou
+    if (isMoving && (Vector2)transform.position == targetPosition)
+    {
+        isMoving = false;
+        gameController.EndPlayerTurn(); // Termina o turno do jogador
+    }
+
+    // Move o personagem em direção ao alvo
+    if (isMoving)
+    {
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+    }
         }
 
         // Checa se o movimento terminou
