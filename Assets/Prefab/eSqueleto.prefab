@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8905420958678628739}
   - component: {fileID: 5218749864225859626}
   - component: {fileID: 723653024690493923}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: eSqueleto
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -177,3 +177,6 @@ MonoBehaviour:
   player: {fileID: 0}
   gameController: {fileID: 0}
   tilemap: {fileID: 0}
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 72
