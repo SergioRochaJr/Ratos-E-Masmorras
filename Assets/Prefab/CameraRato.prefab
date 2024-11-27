@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2754488601095004032}
   - component: {fileID: 1886888551153687949}
   - component: {fileID: 4022445835008285961}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CameraRato
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
 --- !u!114 &4022445835008285961
 MonoBehaviour:
@@ -123,4 +123,8 @@ MonoBehaviour:
   tilemap: {fileID: 0}
   paredeLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  gameController: {fileID: 0}
