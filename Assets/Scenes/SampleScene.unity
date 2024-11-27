@@ -160,6 +160,29 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 8961378246330868396, guid: 2c4529d78ce4cea4faeced0b3e93f689, type: 3}
   m_PrefabInstance: {fileID: 1924303842807809065}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1745206699 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8995512370059573098, guid: 3e38725bc96e4ee44b47409975463607, type: 3}
+  m_PrefabInstance: {fileID: 3938461511589697494}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1745206702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745206699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4d70eaf568b7df419b1d39fb5879bc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 2
+  detectionRange: 5
+  attackRange: 1
+  player: {fileID: 0}
+  gameController: {fileID: 0}
+  tilemap: {fileID: 0}
 --- !u!1001 &1586546120166335501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -447,7 +470,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8995512370059573098, guid: 3e38725bc96e4ee44b47409975463607, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1745206702}
   m_SourcePrefab: {fileID: 100100000, guid: 3e38725bc96e4ee44b47409975463607, type: 3}
 --- !u!1001 &4346475907401812225
 PrefabInstance:
@@ -627,6 +653,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 981530782}
+    - target: {fileID: 7900946861031716505, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
+      propertyPath: tilemap
+      value: 
+      objectReference: {fileID: 1684224775}
+    - target: {fileID: 7900946861031716505, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
+      propertyPath: attackRange
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7900946861031716505, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
       propertyPath: gameController
       value: 
