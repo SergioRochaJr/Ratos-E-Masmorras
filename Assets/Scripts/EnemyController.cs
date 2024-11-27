@@ -52,13 +52,13 @@ public class EnemyController : MonoBehaviour
         float step = moveSpeed * Time.deltaTime; // Calcula o passo de movimento
 
         // Move o inimigo na direção do jogador até alcançar a posição alvo
-        while (Vector3.Distance(transform.position, player.position) > attackRange)
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
             yield return null; // Espera um frame antes de continuar o movimento
         }
 
-        // Chegou ao jogador ou ficou perto o suficiente
+        // Quando o movimento termina, passamos o turno
         StopMoving();
     }
 
@@ -66,7 +66,6 @@ public class EnemyController : MonoBehaviour
     private void AttackPlayer()
     {
         Debug.Log("Inimigo atacou o jogador!");
-        // Aqui você pode adicionar a lógica para o ataque
         StopMoving();  // Depois de atacar, o inimigo termina seu turno
     }
 
