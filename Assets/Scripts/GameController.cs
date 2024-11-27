@@ -41,6 +41,6 @@ public class GameController : MonoBehaviour
     private void EndEnemyTurn()
     {
         isPlayerTurn = true;
-        Debug.Log("Turno do inimigo acabou. É o turno do jogador.");
+        Debug.Log("Turno do inimigo acabou. O turno do jogador.");
     }
 }
