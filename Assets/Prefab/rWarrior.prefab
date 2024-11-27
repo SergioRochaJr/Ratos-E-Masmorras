@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8613476434599446796}
   - component: {fileID: 587680092993013990}
   - component: {fileID: 7990711210145380027}
+  - component: {fileID: 4849388299140248126}
   m_Layer: 6
   m_Name: rWarrior
   m_TagString: Player
@@ -154,7 +155,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.6, y: 1.6}
+  m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
 --- !u!50 &7990711210145380027
 Rigidbody2D:
@@ -196,6 +197,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hearts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
