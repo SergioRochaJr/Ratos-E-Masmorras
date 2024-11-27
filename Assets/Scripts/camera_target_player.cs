@@ -15,6 +15,7 @@ public class CameraTargetMovement : MonoBehaviour
     public LayerMask enemyLayer;  // Camada onde os inimigos estão
 
     public GameController gameController; // Referência ao GameController para saber o turno atual
+    public MenuController menuController; // Referência ao controlador de inventário
 
     void Start()
     {
@@ -23,6 +24,12 @@ public class CameraTargetMovement : MonoBehaviour
 
     void Update()
     {
+        // Bloqueia o movimento se o inventário está aberto
+        if (menuController.IsInventoryOpen)
+        {
+            return; // Sai do método sem processar movimento
+        }
+
         // Só permite mover o alvo da câmera se for o turno do jogador
         if (gameController.isPlayerTurn && !isMoving)
         {
