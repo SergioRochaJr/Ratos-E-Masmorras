@@ -5,6 +5,8 @@ public class MenuController : MonoBehaviour
 {
     public TextMeshProUGUI[] mainOptions; // Opções principais do menu
     public TextMeshProUGUI[] skillOptions; // Opções de habilidades
+    public TextMeshProUGUI[] attackOptions; // Opções de ataque
+    public TextMeshProUGUI[] attackDirectionOptions; // Direções de ataque (W, A, S, D)
     public TextMeshProUGUI[] inventoryItems; // Opções de itens no inventário
     public RectTransform indicator; // Indicador para mostrar a seleção atual
     public RectTransform inventoryPanel; // Painel do inventário
@@ -13,7 +15,12 @@ public class MenuController : MonoBehaviour
 
     private int currentIndex = 0; // Índice da opção selecionada atualmente
     private int currentMenu = 0; // 0 = Menu principal, 1 = Habilidades, 2 = Inventário
+    private bool isSelectingDirection = false; // Se estamos selecionando uma direção para atacar
+
     public bool IsInventoryOpen => currentMenu == 2; // Retorna true se o inventário estiver aberto
+    private string[] skillNames = { "Corte Duplo", "Investida" }; // Habilidades disponíveis
+    private int selectedSkillIndex = 0; // Armazena o índice da habilidade selecionada
+    private bool isSelectingSkillDirection = false; // Para habilidades
 
 
     void Start()
@@ -23,104 +30,149 @@ public class MenuController : MonoBehaviour
 
     void Update()
 {
-    if (currentMenu == 2) // Quando estiver no inventário
+    if (isSelectingDirection) // Se estiver escolhendo direção de ataque
     {
-        // Navegação no inventário
-        if (Input.GetKeyDown(KeyCode.W)) // Move para cima
+        HandleDirectionSelection();
+        
+        // Voltar ao menu principal (ESC) quando estiver na tela de direção
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            currentIndex = Mathf.Max(0, currentIndex - 1); // Move para cima
-            UpdateIndicator(); // Atualiza o indicador do inventário
-        }
-        else if (Input.GetKeyDown(KeyCode.S)) // Move para baixo
-        {
-            currentIndex = Mathf.Min(inventoryItems.Length - 1, currentIndex + 1); // Move para baixo
-            UpdateIndicator(); // Atualiza o indicador do inventário
+            isSelectingDirection = false;
+            ShowMainMenu(); // Volta ao menu principal
         }
     }
-    else // Navegação nos outros menus (Menu Principal, Habilidades)
+    else if (isSelectingSkillDirection) // Se estiver escolhendo direção para habilidade
     {
-        if (Input.GetKeyDown(KeyCode.W)) // Move para cima
+        HandleSkillDirectionSelection();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            currentIndex = Mathf.Max(0, currentIndex - 1);
-            UpdateIndicator();
+            isSelectingSkillDirection = false;
+            ShowSkillsMenu(); // Volta ao menu de habilidades
         }
-        else if (Input.GetKeyDown(KeyCode.S)) // Move para baixo
-        {
-            int optionsLength = GetCurrentOptions().Length;
-            currentIndex = Mathf.Min(optionsLength - 1, currentIndex + 1);
-            UpdateIndicator();
-        }
+    }
+    else // Navegação nos menus
+    {
+        HandleMenuNavigation();
     }
 
-    if (Input.GetKeyDown(KeyCode.Return)) // Confirma a seleção (Enter)
+    // Confirmar seleção (Enter)
+    if (Input.GetKeyDown(KeyCode.Return))
     {
         ExecuteOption();
     }
 
-    if (Input.GetKeyDown(KeyCode.Escape)) // Volta ao menu anterior (ESC)
+    // Voltar ao menu anterior (ESC)
+    if (Input.GetKeyDown(KeyCode.Escape) && !isSelectingDirection && !isSelectingSkillDirection)
     {
         GoBack();
     }
 }
 
 
-
-    private void UpdateIndicator()
-{
-    if (currentMenu == 2) // Menu de inventário
+    // Lida com a seleção de direção para ataque
+    private void HandleDirectionSelection()
     {
-        if (inventoryItems.Length > 0 && currentIndex >= 0 && currentIndex < inventoryItems.Length)
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            Vector3 newPosition = inventoryItems[currentIndex].transform.position;
-            inventoryIndicator.position = new Vector3(inventoryIndicator.position.x, newPosition.y, newPosition.z);
+            Debug.Log("Atacou para cima!");
+            isSelectingDirection = false;
+            ShowMainMenu(); // Volta ao menu principal após atacar
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("Atacou para a esquerda!");
+            isSelectingDirection = false;
+            ShowMainMenu();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("Atacou para baixo!");
+            isSelectingDirection = false;
+            ShowMainMenu();
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            Debug.Log("Atacou para a direita!");
+            isSelectingDirection = false;
+            ShowMainMenu();
         }
     }
-    else // Menu principal ou de habilidades
-    {
-        if (currentMenu == 0 || currentMenu == 1)
-        {
-            TextMeshProUGUI[] options = GetCurrentOptions();
-            if (options.Length == 0) return;
 
-            // Verifica se o currentIndex é válido
-            if (currentIndex >= 0 && currentIndex < options.Length)
-            {
-                Vector3 newPosition = options[currentIndex].transform.position;
-                indicator.position = new Vector3(indicator.position.x, newPosition.y, newPosition.z);
-            }
-        }
+    private void HandleSkillDirectionSelection()
+{
+    if (Input.GetKeyDown(KeyCode.W))
+    {
+        Debug.Log($"{skillNames[selectedSkillIndex]} para cima!"); // Usando o nome da habilidade
+        isSelectingSkillDirection = false;
+        ShowMainMenu(); // Volta ao menu de habilidades após selecionar a direção
+    }
+    else if (Input.GetKeyDown(KeyCode.A))
+    {
+        Debug.Log($"{skillNames[selectedSkillIndex]} para esquerda!"); // Usando o nome da habilidade
+        isSelectingSkillDirection = false;
+        ShowMainMenu();
+    }
+    else if (Input.GetKeyDown(KeyCode.S))
+    {
+        Debug.Log($"{skillNames[selectedSkillIndex]} para baixo!"); // Usando o nome da habilidade
+        isSelectingSkillDirection = false;
+        ShowMainMenu();
+    }
+    else if (Input.GetKeyDown(KeyCode.D))
+    {
+        Debug.Log($"{skillNames[selectedSkillIndex]} para direita!"); // Usando o nome da habilidade
+        isSelectingSkillDirection = false;
+        ShowMainMenu();
     }
 }
 
 
-
-    // Executa a ação correspondente à opção selecionada
-    private void ExecuteOption()
+    // Lida com a navegação nos menus
+    private void HandleMenuNavigation()
     {
-        switch (currentMenu)
+        if (currentMenu == 2) // Inventário
         {
-            case 0: // Menu principal
-                switch (currentIndex)
-                {
-                    case 0:
-                        Debug.Log("Atacar selecionado!");
-                        break;
-                    case 1:
-                        ShowSkillsMenu();
-                        break;
-                    case 2:
-                        ShowInventory();
-                        break;
-                }
-                break;
-            case 1: // Menu de habilidades
-                Debug.Log($"Habilidade {currentIndex + 1} selecionada!");
-                break;
-            case 2: // Inventário
-                UseItem();
-                break;
+            if (Input.GetKeyDown(KeyCode.W)) { currentIndex = Mathf.Max(0, currentIndex - 1); UpdateIndicator(); }
+            else if (Input.GetKeyDown(KeyCode.S)) { currentIndex = Mathf.Min(inventoryItems.Length - 1, currentIndex + 1); UpdateIndicator(); }
+        }
+        else // Menus principais ou de habilidades
+        {
+            if (Input.GetKeyDown(KeyCode.W)) { currentIndex = Mathf.Max(0, currentIndex - 1); UpdateIndicator(); }
+            else if (Input.GetKeyDown(KeyCode.S)) { currentIndex = Mathf.Min(GetCurrentOptions().Length - 1, currentIndex + 1); UpdateIndicator(); }
         }
     }
+
+    // Função para selecionar habilidades
+private void ExecuteOption()
+{
+    switch (currentMenu)
+    {
+        case 0: // Menu principal
+            switch (currentIndex)
+            {
+                case 0: // Atacar
+                    ShowAttackDirectionMenu();
+                    break;
+                case 1: // Habilidades
+                    ShowSkillsMenu();
+                    break;
+                case 2: // Inventário
+                    ShowInventory();
+                    break;
+            }
+            break;
+        case 1: // Menu de habilidades
+            selectedSkillIndex = currentIndex; // Salva a habilidade selecionada
+            ShowSkillDirectionMenu();
+            break;
+        case 2: // Inventário
+            UseItem();
+            break;
+    }
+}
+
+
 
     // Mostra o menu principal
     private void ShowMainMenu()
@@ -129,6 +181,22 @@ public class MenuController : MonoBehaviour
         currentIndex = 0;
         ToggleOptions(mainOptions, true);
         ToggleOptions(skillOptions, false);
+        ToggleOptions(attackOptions, false);
+        ToggleOptions(attackDirectionOptions, false);
+        inventoryPanel.gameObject.SetActive(false);
+        UpdateIndicator();
+    }
+
+    // Mostra o menu de direção de ataque
+    private void ShowAttackDirectionMenu()
+    {
+        currentMenu = 0; // Continua no menu principal
+        isSelectingDirection = true;
+        currentIndex = 0;
+        ToggleOptions(mainOptions, false);
+        ToggleOptions(skillOptions, false);
+        ToggleOptions(attackOptions, false);
+        ToggleOptions(attackDirectionOptions, true); // Exibe as opções de direção
         inventoryPanel.gameObject.SetActive(false);
         UpdateIndicator();
     }
@@ -144,34 +212,43 @@ public class MenuController : MonoBehaviour
         UpdateIndicator();
     }
 
-    private void ShowInventory()
+    // Mostra o menu de direção para habilidades
+private void ShowSkillDirectionMenu()
 {
-    currentMenu = 2;
+    currentMenu = 1; // Continua no menu de habilidades
+    isSelectingSkillDirection = true;
     currentIndex = 0;
-    ToggleOptions(mainOptions, false); // Desativa opções do menu principal
-    ToggleOptions(skillOptions, false); // Desativa opções de habilidades
-    inventoryPanel.gameObject.SetActive(true); // Ativa o painel do inventário
-    indicator.gameObject.SetActive(false); // Oculta o indicador principal
-    inventoryIndicator.gameObject.SetActive(true); // Exibe o indicador de inventário
-
-    // Se o inventário tiver itens, ajusta o currentIndex para garantir que ele esteja dentro dos limites
-    currentIndex = Mathf.Min(currentIndex, inventoryItems.Length - 1);
+    ToggleOptions(mainOptions, false);
+    ToggleOptions(skillOptions, false);
+    ToggleOptions(attackOptions, false);
+    ToggleOptions(attackDirectionOptions, true); // Exibe as opções de direção
+    inventoryPanel.gameObject.SetActive(false);
     UpdateIndicator();
 }
 
+
+    private void ShowInventory()
+    {
+        currentMenu = 2;
+        currentIndex = 0;
+        ToggleOptions(mainOptions, false);
+        ToggleOptions(skillOptions, false);
+        inventoryPanel.gameObject.SetActive(true);
+        indicator.gameObject.SetActive(false);
+        inventoryIndicator.gameObject.SetActive(true);
+        UpdateIndicator();
+    }
 
     // Volta ao menu anterior
     private void GoBack()
     {
         switch (currentMenu)
         {
-            case 1: // Se estiver no menu de habilidades
-                ShowMainMenu();
-                break;
-            case 2: // Se estiver no inventário
-                ShowMainMenu();
-                inventoryIndicator.gameObject.SetActive(false); // Oculta o indicador de inventário
-                indicator.gameObject.SetActive(true); // Reativa o indicador principal
+            case 1:
+            case 2:
+                ShowMainMenu(); // Volta ao menu principal em qualquer situação
+                inventoryIndicator.gameObject.SetActive(false);
+                indicator.gameObject.SetActive(true);
                 break;
         }
     }
@@ -183,6 +260,7 @@ public class MenuController : MonoBehaviour
         {
             case 0: return mainOptions;
             case 1: return skillOptions;
+            case 2: return inventoryItems;
             default: return new TextMeshProUGUI[0];
         }
     }
@@ -200,5 +278,28 @@ public class MenuController : MonoBehaviour
     private void UseItem()
     {
         Debug.Log($"Usando item: {inventoryItems[currentIndex].text}");
+    }
+
+    private void UpdateIndicator()
+    {
+        if (currentMenu == 2)
+        {
+            if (inventoryItems.Length > 0 && currentIndex >= 0 && currentIndex < inventoryItems.Length)
+            {
+                Vector3 newPosition = inventoryItems[currentIndex].transform.position;
+                inventoryIndicator.position = new Vector3(inventoryIndicator.position.x, newPosition.y, newPosition.z);
+            }
+        }
+        else
+        {
+            TextMeshProUGUI[] options = GetCurrentOptions();
+            if (options.Length == 0) return;
+
+            if (currentIndex >= 0 && currentIndex < options.Length)
+            {
+                Vector3 newPosition = options[currentIndex].transform.position;
+                indicator.position = new Vector3(indicator.position.x, newPosition.y, newPosition.z);
+            }
+        }
     }
 }
