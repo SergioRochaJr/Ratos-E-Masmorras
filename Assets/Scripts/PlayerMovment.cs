@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     // Referência ao Tilemap para verificar a colisão com as paredes
     public Tilemap tilemap;
     public LayerMask paredeLayer; // Camada onde as paredes estão (ex: camada "Parede")
+    public LayerMask enemyLayer;  // Camada onde os inimigos estão
 
     private SpriteRenderer spriteRenderer; // Para controlar o espelhamento do sprite
     public GameController gameController; // Referência ao GameController (onde gerenciamos o turno)
@@ -64,6 +65,13 @@ public class PlayerMovement : MonoBehaviour
     private void StartMovement(Vector2 direction)
     {
         targetPosition = (Vector2)transform.position + direction * gridSize; // Define o próximo tile como alvo
+
+        // Atualiza o sprite para a direção horizontal
+        if (direction.x != 0)
+        {
+            FlipSprite(direction.x < 0); // Espelha o sprite se movendo para a esquerda
+        }
+
         isMoving = true;
         StartCoroutine(HopEffect()); // Adiciona o efeito de "pulo"
     }
@@ -79,25 +87,29 @@ public class PlayerMovement : MonoBehaviour
         transform.position -= Vector3.up * hopHeight;
     }
 
-    // Checa se é possível mover para a direção fornecida (verifica se há uma parede)
+    // Checa se é possível mover para a direção fornecida (verifica se há uma parede ou inimigo)
     private bool CanMove(Vector2 direction)
     {
         // Calcula a posição de destino
         Vector2 newPos = (Vector2)transform.position + direction * gridSize;
 
         // Verifica se o tile de destino está bloqueado (com a camada "Parede")
-        Vector3Int tilePosition = tilemap.WorldToCell(newPos); // Converte a posição para o grid do Tilemap
+        Vector3Int tilePosition = tilemap.WorldToCell(newPos);
         TileBase tileAtPosition = tilemap.GetTile(tilePosition);
 
-        // Verifica se há um tile de parede no destino
         if (tileAtPosition != null && tilemap.GetColliderType(tilePosition) != Tile.ColliderType.None)
         {
-            // Se houver um tile de parede (ou outro objeto que bloqueia o movimento), o movimento não é permitido
-            return false;
+            return false; // Bloqueado por parede
         }
 
-        // Se não houver colisão, o movimento é permitido
-        return true;
+        // Verifica se há um inimigo na posição de destino
+        Collider2D hit = Physics2D.OverlapCircle(newPos, 0.1f, enemyLayer);
+        if (hit != null)
+        {
+            return false; // Bloqueado por inimigo
+        }
+
+        return true; // Movimento permitido
     }
 
     // Espelha o sprite horizontalmente

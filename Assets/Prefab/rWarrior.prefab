@@ -13,8 +13,7 @@ GameObject:
   - component: {fileID: 8613476434599446796}
   - component: {fileID: 587680092993013990}
   - component: {fileID: 7990711210145380027}
-  - component: {fileID: 4849388299140248126}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: rWarrior
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -107,7 +106,10 @@ MonoBehaviour:
   tilemap: {fileID: 0}
   paredeLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
   gameController: {fileID: 0}
 --- !u!61 &587680092993013990
 BoxCollider2D:
