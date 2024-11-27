@@ -24,10 +24,16 @@ public class MenuController : MonoBehaviour
 
     public GameController gameController;
 
+    public PlayerMovement playerMovement;
 
     void Start()
     {
-      gameController = FindObjectOfType<GameController>();
+        if (playerMovement == null)
+        {
+            playerMovement = FindObjectOfType<PlayerMovement>();
+        }
+
+        gameController = FindObjectOfType<GameController>();
         ShowMainMenu();
     }
 
@@ -35,7 +41,7 @@ public class MenuController : MonoBehaviour
     {
         if (gameController.isPlayerTurn)
         {
-            if (isSelectingDirection) 
+            if (isSelectingDirection)
             {
                 HandleDirectionSelection();
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -44,7 +50,7 @@ public class MenuController : MonoBehaviour
                     ShowMainMenu();
                 }
             }
-            else if (isSelectingSkillDirection) 
+            else if (isSelectingSkillDirection)
             {
                 HandleSkillDirectionSelection();
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -53,7 +59,7 @@ public class MenuController : MonoBehaviour
                     ShowSkillsMenu();
                 }
             }
-            else 
+            else
             {
                 HandleMenuNavigation();
             }
@@ -75,65 +81,53 @@ public class MenuController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             Debug.Log("Atacou para cima!");
-            isSelectingDirection = false;
-            gameController.EndPlayerTurn();
-            ShowMainMenu();
+            playerMovement.PerformAttack(Vector2.up); // Agora a instância correta é chamada
+            EndTurn();
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
             Debug.Log("Atacou para a esquerda!");
-            isSelectingDirection = false;
-            gameController.EndPlayerTurn();
-            ShowMainMenu();
+            playerMovement.PerformAttack(Vector2.left);
+            EndTurn();
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
             Debug.Log("Atacou para baixo!");
-            isSelectingDirection = false;
-            gameController.EndPlayerTurn();
-            ShowMainMenu();
+            playerMovement.PerformAttack(Vector2.down);
+            EndTurn();
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
             Debug.Log("Atacou para a direita!");
-            isSelectingDirection = false;
-            gameController.EndPlayerTurn();
-            ShowMainMenu();
+            playerMovement.PerformAttack(Vector2.right);
+            EndTurn();
         }
     }
 
-    private void HandleSkillDirectionSelection()
-{
-    if (Input.GetKeyDown(KeyCode.W))
-    {
-        Debug.Log($"{skillNames[selectedSkillIndex]} para cima!");
-        isSelectingSkillDirection = false;
-        gameController.EndPlayerTurn();
-        ShowMainMenu();
-    }
-    else if (Input.GetKeyDown(KeyCode.A))
-    {
-        Debug.Log($"{skillNames[selectedSkillIndex]} para esquerda!");
-        isSelectingSkillDirection = false;
-        gameController.EndPlayerTurn();
-        ShowMainMenu();
-    }
-    else if (Input.GetKeyDown(KeyCode.S))
-    {
-        Debug.Log($"{skillNames[selectedSkillIndex]} para baixo!");
-        isSelectingSkillDirection = false;
-        gameController.EndPlayerTurn();
-        ShowMainMenu();
-    }
-    else if (Input.GetKeyDown(KeyCode.D))
-    {
-        Debug.Log($"{skillNames[selectedSkillIndex]} para direita!");
-        isSelectingSkillDirection = false;
-        gameController.EndPlayerTurn();
-        ShowMainMenu();
-    }
-}
 
+    private void HandleSkillDirectionSelection()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Debug.Log($"{skillNames[selectedSkillIndex]} para cima!");
+            EndTurn();
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log($"{skillNames[selectedSkillIndex]} para esquerda!");
+            EndTurn();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log($"{skillNames[selectedSkillIndex]} para baixo!");
+            EndTurn();
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            Debug.Log($"{skillNames[selectedSkillIndex]} para direita!");
+            EndTurn();
+        }
+    }
 
     private void HandleMenuNavigation()
     {
@@ -149,35 +143,45 @@ public class MenuController : MonoBehaviour
         }
     }
 
-private void ExecuteOption()
-{
-  if (!gameController.isPlayerTurn) return;
-    switch (currentMenu)
+    private void ExecuteOption()
     {
-        case 0: 
-            switch (currentIndex)
-            {
-                case 0:
-                    ShowAttackDirectionMenu();
-                    break;
-                case 1:
-                    ShowSkillsMenu();
-                    break;
-                case 2:
-                    ShowInventory();
-                    break;
-            }
-            break;
-        case 1: 
-            selectedSkillIndex = currentIndex;
-            ShowSkillDirectionMenu();
-            break;
-        case 2:
-            UseItem();
-            break;
-    }
-}
+        if (!gameController.isPlayerTurn) return;
 
+        switch (currentMenu)
+        {
+            case 0:
+                HandleMainMenuSelection();
+                break;
+            case 1:
+                HandleSkillSelection();
+                break;
+            case 2:
+                UseItem();
+                break;
+        }
+    }
+
+    private void HandleMainMenuSelection()
+    {
+        switch (currentIndex)
+        {
+            case 0:
+                ShowAttackDirectionMenu();
+                break;
+            case 1:
+                ShowSkillsMenu();
+                break;
+            case 2:
+                ShowInventory();
+                break;
+        }
+    }
+
+    private void HandleSkillSelection()
+    {
+        selectedSkillIndex = currentIndex;
+        ShowSkillDirectionMenu();
+    }
 
     private void ShowMainMenu()
     {
@@ -214,19 +218,18 @@ private void ExecuteOption()
         UpdateIndicator();
     }
 
-private void ShowSkillDirectionMenu()
-{
-    currentMenu = 1;
-    isSelectingSkillDirection = true;
-    currentIndex = 0;
-    ToggleOptions(mainOptions, false);
-    ToggleOptions(skillOptions, false);
-    ToggleOptions(attackOptions, false);
-    ToggleOptions(attackDirectionOptions, true);
-    inventoryPanel.gameObject.SetActive(false);
-    UpdateIndicator();
-}
-
+    private void ShowSkillDirectionMenu()
+    {
+        currentMenu = 1;
+        isSelectingSkillDirection = true;
+        currentIndex = 0;
+        ToggleOptions(mainOptions, false);
+        ToggleOptions(skillOptions, false);
+        ToggleOptions(attackOptions, false);
+        ToggleOptions(attackDirectionOptions, true);
+        inventoryPanel.gameObject.SetActive(false);
+        UpdateIndicator();
+    }
 
     private void ShowInventory()
     {
@@ -295,7 +298,6 @@ private void ShowSkillDirectionMenu()
         gameController.EndPlayerTurn();
     }
 
-
     private void UpdateIndicator()
     {
         if (currentMenu == 2)
@@ -317,5 +319,13 @@ private void ShowSkillDirectionMenu()
                 indicator.position = new Vector3(indicator.position.x, newPosition.y, newPosition.z);
             }
         }
+    }
+
+    private void EndTurn()
+    {
+        isSelectingDirection = false;
+        isSelectingSkillDirection = false;
+        gameController.EndPlayerTurn();
+        ShowMainMenu();
     }
 }
