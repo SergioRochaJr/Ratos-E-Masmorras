@@ -44,13 +44,16 @@ public class MenuController : MonoBehaviour
 
     // Atualiza a posição do indicador
     private void UpdateIndicator()
-    {
-        TextMeshProUGUI[] options = GetCurrentOptions();
-        if (options.Length == 0) return;
+{
+    if (currentMenu == 2) // Não atualiza o indicador no inventário
+        return;
 
-        Vector3 newPosition = options[currentIndex].transform.position;
-        indicator.position = new Vector3(indicator.position.x, newPosition.y, newPosition.z);
-    }
+    TextMeshProUGUI[] options = GetCurrentOptions();
+    if (options.Length == 0) return;
+
+    Vector3 newPosition = options[currentIndex].transform.position;
+    indicator.position = new Vector3(indicator.position.x, newPosition.y, newPosition.z);
+}
 
     // Executa a ação correspondente à opção selecionada
     private void ExecuteOption()
@@ -101,27 +104,29 @@ public class MenuController : MonoBehaviour
 
     // Mostra o inventário
     private void ShowInventory()
-    {
-        currentMenu = 2;
-        currentIndex = 0;
-        ToggleOptions(mainOptions, false);
-        ToggleOptions(skillOptions, false);
-        inventoryPanel.gameObject.SetActive(true);
-    }
+{
+    currentMenu = 2;
+    currentIndex = 0;
+    ToggleOptions(mainOptions, false); // Desativa opções do menu principal
+    ToggleOptions(skillOptions, false); // Desativa opções de habilidades
+    inventoryPanel.gameObject.SetActive(true); // Ativa o painel do inventário
+    indicator.gameObject.SetActive(false); // Oculta o indicador
+}
 
     // Volta ao menu anterior
     private void GoBack()
+{
+    switch (currentMenu)
     {
-        switch (currentMenu)
-        {
-            case 1: // Se estiver no menu de habilidades
-                ShowMainMenu();
-                break;
-            case 2: // Se estiver no inventário
-                ShowMainMenu();
-                break;
-        }
+        case 1: // Se estiver no menu de habilidades
+            ShowMainMenu();
+            break;
+        case 2: // Se estiver no inventário
+            ShowMainMenu();
+            indicator.gameObject.SetActive(true); // Reativa o indicador
+            break;
     }
+}
 
     // Retorna as opções do menu atual
     private TextMeshProUGUI[] GetCurrentOptions()
