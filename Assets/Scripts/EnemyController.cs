@@ -12,48 +12,61 @@ public class EnemyController : MonoBehaviour
 
     private bool isMoving = false;  // Inicia com o inimigo sem se mover
     private Vector3 targetPosition; // Posição alvo para onde o inimigo vai se mover
-    private float waitTime = 1f; // Tempo que o inimigo aguarda entre os movimentos
-    private float currentWaitTime = 0f;  // Contador de espera
 
     void Update()
     {
         // Impede o movimento enquanto é o turno do jogador ou enquanto o inimigo está se movendo
-        if (gameController.isPlayerTurn || isMoving) return; // Retorna sem fazer nada se for o turno do jogador ou se o inimigo já está se movendo
+        if (gameController.isPlayerTurn || isMoving) return;
 
-        // Se o jogador está dentro do alcance de detecção
-        if (Vector3.Distance(transform.position, player.position) <= detectionRange)
+        // Primeiro, verifica se o jogador está dentro do alcance de ataque
+        if (Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            // Calcula a direção para o jogador
-            Vector3 direction = (player.position - transform.position).normalized;
-
-            // Atualiza a posição alvo para se mover em direção ao jogador
-            targetPosition = transform.position + direction;
-
-            // Inicia o movimento do inimigo
-            isMoving = true;
-            StartCoroutine(MoveTowardsPlayer(direction)); // Inicia a corrotina para mover o inimigo
+            // O inimigo ataca
+            AttackPlayer();
+        }
+        else if (Vector3.Distance(transform.position, player.position) <= detectionRange)
+        {
+            // Se não estiver no alcance de ataque, mas dentro do alcance de detecção, o inimigo se move
+            MoveTowardsPlayer();
         }
         else
         {
-            // Caso o jogador não esteja no alcance, o inimigo termina o turno sem fazer nada
-            gameController.EndEnemyTurn();
+            // Caso o jogador não esteja nem no alcance de detecção, o inimigo termina o turno
+            gameController.EndEnemyTurn();  // Isso deve passar o turno para o jogador
         }
     }
 
-    // Corrotina para mover o inimigo
-    private IEnumerator MoveTowardsPlayer(Vector3 direction)
+    // Função para mover o inimigo em direção ao jogador
+    private void MoveTowardsPlayer()
+    {
+        Vector3 direction = (player.position - transform.position).normalized;
+        targetPosition = transform.position + direction;
+
+        isMoving = true;
+        StartCoroutine(MoveCoroutine(direction)); // Inicia a corrotina para mover o inimigo
+    }
+
+    // Corrotina para mover o inimigo até a posição do jogador
+    private IEnumerator MoveCoroutine(Vector3 direction)
     {
         float step = moveSpeed * Time.deltaTime; // Calcula o passo de movimento
 
         // Move o inimigo na direção do jogador até alcançar a posição alvo
-        while (Vector3.Distance(transform.position, player.position) > attackRange)
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
             yield return null; // Espera um frame antes de continuar o movimento
         }
 
-        // Chegou ao jogador, pronto para atacar ou ficar parado
+        // Quando o movimento termina, passamos o turno
         StopMoving();
+    }
+
+    // Função de ataque ao jogador
+    private void AttackPlayer()
+    {
+        Debug.Log("Inimigo atacou o jogador!");
+        StopMoving();  // Depois de atacar, o inimigo termina seu turno
     }
 
     // Interrompe o movimento do inimigo e passa o turno para o jogador
@@ -66,7 +79,7 @@ public class EnemyController : MonoBehaviour
     // Função chamada para o inimigo agir no seu turno
     public void TakeTurn()
     {
-        // O inimigo pode atacar ou se mover, mas só faz isso se o jogador estiver dentro do alcance
+        // O inimigo pode atacar ou se mover, dependendo da distância do jogador
         Debug.Log("Inimigo tomou seu turno!");
     }
 }
