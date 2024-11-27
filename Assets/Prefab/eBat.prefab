@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3787210684170080972}
   - component: {fileID: 4587216306250020192}
   - component: {fileID: 4361736637563635236}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: eBat
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &4361736637563635236
 MonoBehaviour:
@@ -177,3 +177,6 @@ MonoBehaviour:
   player: {fileID: 0}
   gameController: {fileID: 0}
   tilemap: {fileID: 0}
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 72
