@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2289177260405636982}
   - component: {fileID: 4343384570715742588}
   - component: {fileID: 1019583986245443704}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: eCroco
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -177,3 +177,6 @@ MonoBehaviour:
   player: {fileID: 0}
   gameController: {fileID: 0}
   tilemap: {fileID: 0}
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 72
