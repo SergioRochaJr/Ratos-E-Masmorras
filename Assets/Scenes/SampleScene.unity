@@ -144,6 +144,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8547914883041798793, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
   m_PrefabInstance: {fileID: 7806224211211337694}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1124674562 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4022445835008285961, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
+  m_PrefabInstance: {fileID: 7806224211211337694}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d47429d0a0318e469d2aad6d67491a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1839735485 &1684224775 stripped
 Tilemap:
   m_CorrespondingSourceObject: {fileID: 8961378246330868396, guid: 2c4529d78ce4cea4faeced0b3e93f689, type: 3}
@@ -368,6 +379,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7592471223700996790, guid: 16b1128ca0bb6db4ba888bbbc41c7f25, type: 3}
+      propertyPath: cameraTargetMovement
+      value: 
+      objectReference: {fileID: 1124674562}
     - target: {fileID: 7698721299096342845, guid: 16b1128ca0bb6db4ba888bbbc41c7f25, type: 3}
       propertyPath: m_Name
       value: GameController
@@ -566,11 +581,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 368789013192033255, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 368789013192033255, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 368789013192033255, guid: deb19daa7bd1bb647adb6cc6996c7d21, type: 3}
       propertyPath: m_LocalPosition.z
@@ -629,10 +644,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1886888551153687949, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
+      propertyPath: m_Size.x
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1886888551153687949, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
+      propertyPath: m_Size.y
+      value: 0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 4022445835008285961, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 1684224775}
+    - target: {fileID: 4022445835008285961, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
+      propertyPath: gameController
+      value: 
+      objectReference: {fileID: 602672565}
     - target: {fileID: 4899635777263045613, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
       propertyPath: m_Name
       value: CameraRato
