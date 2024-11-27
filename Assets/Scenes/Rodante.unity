@@ -1067,6 +1067,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1684224775}
     - target: {fileID: 4127286704215004813, guid: 863fde9e63e65814289594d6759c55dd, type: 3}
+      propertyPath: attackRange
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127286704215004813, guid: 863fde9e63e65814289594d6759c55dd, type: 3}
       propertyPath: gameController
       value: 
       objectReference: {fileID: 602672565}
@@ -1333,6 +1337,10 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 1684224775}
+    - target: {fileID: 6142279086872861136, guid: 725d915e025326446958d6543c872f95, type: 3}
+      propertyPath: attackRange
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6142279086872861136, guid: 725d915e025326446958d6543c872f95, type: 3}
       propertyPath: gameController
       value: 

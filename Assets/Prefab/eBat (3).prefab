@@ -173,7 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   detectionRange: 9
-  attackRange: 2
+  attackRange: 1.2
   player: {fileID: 0}
   gameController: {fileID: 0}
   tilemap: {fileID: 0}

@@ -25,4 +25,16 @@ public class PlayerHealth : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    public void Heal(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            if (currentHealth < hearts.Length)
+            {
+                hearts[currentHealth].enabled = true;
+                currentHealth++;
+            }
+        }
+    }
 }

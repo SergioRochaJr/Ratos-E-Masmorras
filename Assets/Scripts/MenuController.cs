@@ -274,9 +274,27 @@ private void ShowSkillDirectionMenu()
 
     private void UseItem()
     {
-        Debug.Log($"Usando item: {inventoryItems[currentIndex].text}");
+        string selectedItem = inventoryItems[currentIndex].text;
+
+        if (selectedItem == "Poção de Vida")
+        {
+            Debug.Log($"Usando item: {selectedItem}");
+
+            PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.Heal(1);
+                Debug.Log("Corações recuperados!");
+            }
+        }
+        else
+        {
+            Debug.Log($"Item {selectedItem} não tem efeito!");
+        }
+
         gameController.EndPlayerTurn();
     }
+
 
     private void UpdateIndicator()
     {
