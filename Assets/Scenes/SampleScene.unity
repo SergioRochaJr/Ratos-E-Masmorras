@@ -135,14 +135,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2066621703}
-    - target: {fileID: 51311455183926636, guid: 34c817c0884b6ca4297172fc208ce0ec, type: 3}
-      propertyPath: m_SortingOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5989809584998560254, guid: 34c817c0884b6ca4297172fc208ce0ec, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7170157762830456459, guid: 34c817c0884b6ca4297172fc208ce0ec, type: 3}
       propertyPath: m_Name
       value: Menu
@@ -241,6 +233,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1da2ec5ca42653f40bd538cf79e99230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &681229718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6244411639734709030, guid: 34c817c0884b6ca4297172fc208ce0ec, type: 3}
+  m_PrefabInstance: {fileID: 135638292}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64a0c5d80b7724468d77e4d613e93c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &729798137
@@ -977,6 +980,10 @@ PrefabInstance:
       propertyPath: gameController
       value: 
       objectReference: {fileID: 602672565}
+    - target: {fileID: 8613476434599446796, guid: 1eb968b2606b75049956181dbba575f9, type: 3}
+      propertyPath: menuController
+      value: 
+      objectReference: {fileID: 681229718}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1067,6 +1074,10 @@ PrefabInstance:
       propertyPath: gameController
       value: 
       objectReference: {fileID: 602672565}
+    - target: {fileID: 4022445835008285961, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
+      propertyPath: menuController
+      value: 
+      objectReference: {fileID: 681229718}
     - target: {fileID: 4899635777263045613, guid: fa470f972c14b0c45a754ee00710f161, type: 3}
       propertyPath: m_Name
       value: CameraRato
