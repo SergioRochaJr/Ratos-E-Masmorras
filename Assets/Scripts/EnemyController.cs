@@ -13,6 +13,9 @@ public class EnemyController : MonoBehaviour
     public Tilemap tilemap;
     public LayerMask collisionLayers;
 
+    public AudioClip attackSound;
+    private AudioSource audioSource;
+
     private bool isMoving = false;
     private Vector3 targetPosition;
     private SpriteRenderer spriteRenderer;
@@ -20,6 +23,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void TakeTurn()
@@ -45,9 +49,10 @@ public class EnemyController : MonoBehaviour
             EndTurn();
         }
     }
+
     public void DestroyEnemy()
     {
-        GameController gameController = FindObjectOfType<GameController>(); 
+        GameController gameController = FindObjectOfType<GameController>();
         if (gameController != null)
         {
             gameController.RemoveEnemy(this);
@@ -55,36 +60,24 @@ public class EnemyController : MonoBehaviour
 
         Destroy(gameObject);
     }
+
     private void MoveTowardsPlayer()
-{
-    Vector3 direction = Vector3.zero;
-
-    float diffX = player.position.x - transform.position.x;
-    float diffY = player.position.y - transform.position.y;
-
-    if (Mathf.Abs(diffX) > Mathf.Abs(diffY))
     {
-        direction = new Vector3(Mathf.Sign(diffX), 0, 0);
-    }
-    else
-    {
-        direction = new Vector3(0, Mathf.Sign(diffY), 0);
-    }
+        Vector3 direction = Vector3.zero;
 
-    Vector3 potentialPosition = transform.position + direction;
+        float diffX = player.position.x - transform.position.x;
+        float diffY = player.position.y - transform.position.y;
 
-    if (CanMove(potentialPosition))
-    {
-        UpdateSpriteDirection(direction);
-        targetPosition = potentialPosition;
-        isMoving = true;
-        StartCoroutine(MoveCoroutine(targetPosition));
-    }
-    else
-    {
-        Debug.Log($"{gameObject.name} não pode se mover na direção inicial. Tentando outra.");
-        direction = (direction.x != 0) ? new Vector3(0, Mathf.Sign(diffY), 0) : new Vector3(Mathf.Sign(diffX), 0, 0);
-        potentialPosition = transform.position + direction;
+        if (Mathf.Abs(diffX) > Mathf.Abs(diffY))
+        {
+            direction = new Vector3(Mathf.Sign(diffX), 0, 0);
+        }
+        else
+        {
+            direction = new Vector3(0, Mathf.Sign(diffY), 0);
+        }
+
+        Vector3 potentialPosition = transform.position + direction;
 
         if (CanMove(potentialPosition))
         {
@@ -95,11 +88,24 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{gameObject.name} está preso. Terminando turno.");
-            EndTurn();
+            Debug.Log($"{gameObject.name} não pode se mover na direção inicial. Tentando outra.");
+            direction = (direction.x != 0) ? new Vector3(0, Mathf.Sign(diffY), 0) : new Vector3(Mathf.Sign(diffX), 0, 0);
+            potentialPosition = transform.position + direction;
+
+            if (CanMove(potentialPosition))
+            {
+                UpdateSpriteDirection(direction);
+                targetPosition = potentialPosition;
+                isMoving = true;
+                StartCoroutine(MoveCoroutine(targetPosition));
+            }
+            else
+            {
+                Debug.Log($"{gameObject.name} está preso. Terminando turno.");
+                EndTurn();
+            }
         }
     }
-}
 
     private IEnumerator MoveCoroutine(Vector3 target)
     {
@@ -118,6 +124,11 @@ public class EnemyController : MonoBehaviour
     private void AttackPlayer()
     {
         Debug.Log($"{gameObject.name} atacou o jogador!");
+
+        if (attackSound != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
 
         StartCoroutine(AttackJumpCoroutine());
 
@@ -164,12 +175,10 @@ public class EnemyController : MonoBehaviour
     }
 
     private void UpdateSpriteDirection(Vector3 direction)
-{
-    if (direction.x != 0)
     {
-        spriteRenderer.flipX = direction.x > 0;
+        if (direction.x != 0)
+        {
+            spriteRenderer.flipX = direction.x > 0;
+        }
     }
 }
-}
-
-
