@@ -45,8 +45,17 @@ public class EnemyController : MonoBehaviour
             EndTurn();
         }
     }
+    public void DestroyEnemy()
+    {
+        GameController gameController = FindObjectOfType<GameController>(); 
+        if (gameController != null)
+        {
+            gameController.RemoveEnemy(this);
+        }
 
-private void MoveTowardsPlayer()
+        Destroy(gameObject);
+    }
+    private void MoveTowardsPlayer()
 {
     Vector3 direction = Vector3.zero;
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -23,13 +24,27 @@ public class GameController : MonoBehaviour
     {
         if (currentEnemyIndex < enemies.Length)
         {
-            Debug.Log($"Processando turno do inimigo {currentEnemyIndex + 1}/{enemies.Length}");
-            enemies[currentEnemyIndex].TakeTurn();
+            if (enemies[currentEnemyIndex] != null) 
+            {
+                Debug.Log($"Processando turno do inimigo {currentEnemyIndex + 1}/{enemies.Length}");
+                enemies[currentEnemyIndex].TakeTurn();
+            }
+            else
+            {
+                Debug.Log($"Inimigo {currentEnemyIndex + 1} foi destruído. Passando para o próximo.");
+                currentEnemyIndex++;
+                ProcessNextEnemy();
+            }
         }
         else
         {
             EndEnemyTurn();
         }
+    }
+
+    public void RemoveEnemy(EnemyController enemy)
+    {
+        enemies = enemies.Where(e => e != enemy).ToArray();  // Remove o inimigo da lista
     }
 
     public void EndEnemyAction()
