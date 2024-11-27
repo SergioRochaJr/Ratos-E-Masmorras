@@ -15,39 +15,30 @@ public class EnemyController : MonoBehaviour
     private bool isMoving = false;  // Indica se o inimigo está se movendo
     private Vector3 targetPosition; // Próxima posição do inimigo
 
-    void Update()
+    public void TakeTurn()
     {
-        // O inimigo só age se for seu turno
-        if (gameController.isPlayerTurn || isMoving) return;
+        if (isMoving)
+        {
+            Debug.Log($"{gameObject.name} ainda está se movendo. Ignorando turno.");
+            return;
+        }
+
+        Debug.Log($"{gameObject.name} está tomando seu turno.");
 
         if (Vector3.Distance(transform.position, player.position) <= attackRange)
         {
-            // O inimigo ataca o jogador
             AttackPlayer();
         }
         else if (Vector3.Distance(transform.position, player.position) <= detectionRange)
         {
-            // O inimigo tenta se mover em direção ao jogador
             MoveTowardsPlayer();
         }
         else
         {
-            // Caso o jogador esteja fora do alcance, o inimigo termina o turno
-            gameController.EndEnemyTurn();
+            EndTurn(); // Nada a fazer, termina o turno
         }
     }
 
-    // Função para iniciar o turno do inimigo
-    public void TakeTurn()
-    {
-        if (!isMoving) // Apenas age se não estiver em movimento
-        {
-            Debug.Log($"{gameObject.name} está tomando seu turno.");
-            Update(); // Chama o comportamento normal de Update
-        }
-    }
-
-    // Função para mover o inimigo em direção ao jogador
     private void MoveTowardsPlayer()
     {
         Vector3 direction = Vector3.zero;
@@ -56,54 +47,47 @@ public class EnemyController : MonoBehaviour
         float diffX = player.position.x - transform.position.x;
         float diffY = player.position.y - transform.position.y;
 
-        // Decide a direção com base na maior diferença
         if (Mathf.Abs(diffX) > Mathf.Abs(diffY))
         {
-            // Prioriza movimento na direção horizontal
-            direction = new Vector3(Mathf.Sign(diffX), 0, 0);
+            direction = new Vector3(Mathf.Sign(diffX), 0, 0); // Movimento horizontal
         }
         else
         {
-            // Prioriza movimento na direção vertical
-            direction = new Vector3(0, Mathf.Sign(diffY), 0);
+            direction = new Vector3(0, Mathf.Sign(diffY), 0); // Movimento vertical
         }
 
         Vector3 potentialPosition = transform.position + direction;
 
-        // Verifica se pode mover na direção escolhida
         if (CanMove(potentialPosition))
         {
             targetPosition = potentialPosition;
+            isMoving = true;
+            StartCoroutine(MoveCoroutine(targetPosition));
         }
         else
         {
-            // Se não puder mover na direção escolhida, tenta a outra
+            Debug.Log($"{gameObject.name} não pode se mover na direção inicial. Tentando outra.");
             direction = (direction.x != 0) ? new Vector3(0, Mathf.Sign(diffY), 0) : new Vector3(Mathf.Sign(diffX), 0, 0);
             potentialPosition = transform.position + direction;
 
             if (CanMove(potentialPosition))
             {
                 targetPosition = potentialPosition;
+                isMoving = true;
+                StartCoroutine(MoveCoroutine(targetPosition));
             }
             else
             {
-                // Se nenhuma direção for válida, termina o turno
-                gameController.EndEnemyTurn();
-                return;
+                Debug.Log($"{gameObject.name} está preso. Terminando turno.");
+                EndTurn();
             }
         }
-
-        // Move o inimigo para a posição alvo
-        isMoving = true;
-        StartCoroutine(MoveCoroutine(targetPosition));
     }
 
-    // Corrotina para mover o inimigo até a posição alvo
     private IEnumerator MoveCoroutine(Vector3 target)
     {
         float step = moveSpeed * Time.deltaTime;
 
-        // Move o inimigo até a posição alvo
         while (Vector3.Distance(transform.position, target) > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, target, step);
@@ -114,28 +98,28 @@ public class EnemyController : MonoBehaviour
         StopMoving();
     }
 
-    // Função de ataque ao jogador
     private void AttackPlayer()
     {
-        Debug.Log("Inimigo atacou o jogador!");
-        StopMoving();  // Depois de atacar, o inimigo termina seu turno
+        Debug.Log($"{gameObject.name} atacou o jogador!");
+        EndTurn();
     }
 
-    // Interrompe o movimento do inimigo e passa o turno ao jogador
     private void StopMoving()
     {
         isMoving = false;
-        gameController.EndEnemyTurn();
+        EndTurn();
     }
 
-    // Verifica se o inimigo pode se mover para uma posição específica
+    private void EndTurn()
+    {
+        gameController.EndEnemyAction();
+    }
+
     private bool CanMove(Vector3 target)
     {
-        // Converte a posição de destino para o grid do Tilemap
         Vector3Int cellPosition = tilemap.WorldToCell(target);
         TileBase tile = tilemap.GetTile(cellPosition);
 
-        // Verifica se há um tile bloqueando o caminho
         return tile == null || tilemap.GetColliderType(cellPosition) == Tile.ColliderType.None;
     }
 }
