@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI; // Necessário para usar UI
 
 public class PlayerHealth : MonoBehaviour
 {
-    public GameObject[] hearts; // Array para armazenar os corações
+    public Image[] hearts; // Array para armazenar as imagens dos corações
     private int currentHealth;  // Vida atual do jogador
 
     void Start()
@@ -24,7 +25,7 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth > 0)
         {
             currentHealth--; // Reduz a vida
-            Destroy(hearts[currentHealth]); // Remove um coração da tela
+            hearts[currentHealth].enabled = false; // Desativa o coração da UI
         }
 
         // Se a vida chegar a 0, pode implementar lógica de "game over"
